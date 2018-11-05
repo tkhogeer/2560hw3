@@ -11,11 +11,13 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -25,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 public class Login extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -33,11 +35,15 @@ public class Login extends HttpServlet {
         boolean result=LoginCheck.checkLogin(username, password);
 
         if (result==true){
+            HttpSession session=request.getSession(true);
             LoginBean mybean = new LoginBean(username, password);
-            request.getSession().setAttribute("username",username);
-            response.sendRedirect("home.jsp");
+            session.setAttribute("ub",mybean);
+            session.setAttribute("username",username);
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/home.jsp");
+            rd.forward(request, response);
         } else {
-            response.sendRedirect("index.jsp");
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/error.jsp");
+            rd.forward(request, response);
         }
 
     }
