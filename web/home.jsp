@@ -19,8 +19,9 @@
             response.sendRedirect("index.jsp");
         }
         %>
+        <jsp:useBean id="ub" class="com.LoginBean" scope="session" />
         
-        <h1>Welcome ${username}</h1>
+        <h1>Welcome <jsp:getProperty name="ub" property="username" /></h1> 
         <a href="logout.jsp">Logout</a>
     </body>
 </html>
